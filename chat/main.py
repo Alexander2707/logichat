@@ -5,7 +5,7 @@ from socket import*
 import threading
 
 client = socket(AF_INET, SOCK_STREAM)
-client.connect(('0.tcp.eu.ngrok.io', 14202))
+client.connect(('localhost', 1488))
 
 # 
 load_image = Image.open("image/send_icon.png")
@@ -33,12 +33,14 @@ def click():
     msg = ent.get()
     ent.delete(0, END)
     text_pole.configure(state="normal")
-    text_pole.insert(END, "Sasha_simba:" + str(msg) + "\n\n")
+    text_pole.insert(END, "Sasha_simba: " + msg + "\n\n")
     text_pole.configure(state="disabled")
-    client.send(f"Sasha_simba: {msg.encode()}")
-    
+    client.send(f"Sasha_simba: {msg}".encode())
+   
 def on_enter(event):
     click()
+    
+
 
 # ---------------- GET MESSAGE ----------------   
 def recieve():
@@ -47,14 +49,15 @@ def recieve():
             message = client.recv(1024).decode().strip()
             print(message)
             text_pole.configure(state="normal")
-            text_pole.insert(END, "server" + str(message) + "\n\n")
+            text_pole.insert(END, "server:" + message + "\n\n")
             text_pole.configure(state="disabled")
         except:
             pass
         
 threading.Thread(target=recieve).start()
 
-b1 = CTkButton(f2, width=80, height=30, fg_color="royalblue", corner_radius=20, text="SEND", image=img, command=click)
+b1 = CTkButton(f2, width=70, height=30, fg_color="royalblue", corner_radius=20, text="SEND", image=img, command=click)
+b1.pack_propagate(False)
 b1.pack(side="right", padx=10)
 
 f1.pack(pady=20)
